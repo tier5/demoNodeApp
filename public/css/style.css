@@ -82,5 +82,26 @@ body {
 }
 
 footer{
+  background-color: #ffffff;
+  color : #bbb;
   margin-top:40px;
+}
+
+.google-btn{
+    color: #fff;
+    text-decoration: none;
+    font-size: 18px;
+    padding: 10px;
+    background: #ff5353;
+}
+
+.btn-google:active:hover, .btn-google.active:hover, .open>.dropdown-toggle.btn-google:hover, .btn-google:active:focus, .btn-google.active:focus, .open>.dropdown-toggle.btn-google:focus, .btn-google:active.focus, .btn-google.active.focus, .open>.dropdown-toggle.btn-google.focus {
+    color: #fff;
+    background-color: #a32b1c;
+    border-color: rgba(0,0,0,0.2);
+}
+
+.custom-social-login{
+  padding: 13px;
+  border : 5px;
 }

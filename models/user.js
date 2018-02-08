@@ -14,7 +14,14 @@ var UserSchema = mongoose.Schema({
   },
   name : {
     type : String
-  }
+  },
+  socialInfo:[{
+    googleId    : String,
+    facebookId  : String,
+    instagramId     : String,
+    githubId    : String,
+    twitterId   : String,
+  }]
 });
 
 var User  = module.exports = mongoose.model('User', UserSchema);
@@ -42,4 +49,24 @@ module.exports.comparePassword = function(candidatePassword, hash, callback){
     if(err) throw err;
     callback(null, isMatch);
   })
+}
+
+module.exports.getOneExistingGoogleUser = function(id , callback){
+  var query = {socialInfo: {$elemMatch : {googleId: id}}};
+  User.findOne(query, callback);
+}
+
+module.exports.getOneExistingFacebookUser = function(id , callback){
+  var query = {socialInfo: {$elemMatch : {facebookId: id}}};
+  User.findOne(query, callback);
+}
+
+module.exports.getOneExistingTwitterUser = function(id , callback){
+  var query = {socialInfo: {$elemMatch : {twitterId: id}}};
+  User.findOne(query, callback);
+}
+
+module.exports.getOneExistingInstagramUser = function(id , callback){
+  var query = {socialInfo: {$elemMatch : {instagramId: id}}};
+  User.findOne(query, callback);
 }
