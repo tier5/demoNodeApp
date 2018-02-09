@@ -62,7 +62,9 @@ router.get('/login/googleAuth', passport.authenticate('google',{
   scope: ['profile']
 }));
 
-router.get('/login/facebookAuth', passport.authenticate('facebook',{
+router.get('/login/facebookAuth', passport.authenticate('facebook'));
+
+router.get('/login/githubAuth', passport.authenticate('github',{
   scope: ['profile']
 }));
 
@@ -99,6 +101,13 @@ router.get('/twitter/login/callback', passport.authenticate('twitter') , (req, r
 //callback route for instagram to redirect to
 
 router.get('/instagram/login/callback', passport.authenticate('instagram') , (req, res) => {
+  console.log(req.user);
+  //res.send('You reached a callback uri user : '+req.user);
+  res.redirect('/');
+});
+
+//callback route for github to redirect to
+router.get('/github/login/callback', passport.authenticate('github') , (req, res) => {
   console.log(req.user);
   //res.send('You reached a callback uri user : '+req.user);
   res.redirect('/');

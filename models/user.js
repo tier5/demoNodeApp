@@ -18,7 +18,7 @@ var UserSchema = mongoose.Schema({
   socialInfo:[{
     googleId    : String,
     facebookId  : String,
-    instagramId     : String,
+    instagramId : String,
     githubId    : String,
     twitterId   : String,
   }]
@@ -68,5 +68,10 @@ module.exports.getOneExistingTwitterUser = function(id , callback){
 
 module.exports.getOneExistingInstagramUser = function(id , callback){
   var query = {socialInfo: {$elemMatch : {instagramId: id}}};
+  User.findOne(query, callback);
+}
+
+module.exports.getOneExistingGithubUser = function(id , callback){
+  var query = {socialInfo: {$elemMatch : {githubId: id}}};
   User.findOne(query, callback);
 }

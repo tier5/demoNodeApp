@@ -3,59 +3,60 @@ const GoogleStrategy    = require('passport-google-oauth20');
 const FacebookStrategy  = require('passport-facebook');
 const TwitterStrategy   = require('passport-twitter');
 const InstagramStrategy = require('passport-instagram');
+const GithubStrategy    = require('passport-github').Strategy;
 const LocalStrategy     = require('passport-local').Strategy;
-
 require('dotenv').config();
 
-require('dotenv').config();
 var User    = require('../models/user');
 
 pasport.serializeUser((user, done) => {
+  console.log('init serialize user');
     done(null, user.id);
 });
 
 pasport.deserializeUser((id, done) => {
+  console.log('init de-serialize user');
     User.getUserById(id, function(err, user){
         if(err) throw err;
+        console.log('completed de-serialize user');
         done(err, user);
     });
 });
 
-
-
 var googleOpts = {
-  clientID : process.env.GOOGLE_CLIENT_ID,
-  clientSecret : process.env.GOOGLE_CLIENT_SECRET,
-  callbackURL : process.env.GOOGLE_CALLBACK_URL
-},
-googleCallback = function(accessToken, refreshToken, profile, done){
-  //check if user already exists
-  User.getOneExistingGoogleUser(profile.id, (err, user) => {
-      if(err) throw err;
-      if(user){
-          console.log('pre existing google user ', user);
-          done(null, user);
-      }
-      else
-      {
-          // create a new user
-          var newUser = new User({
-            name : profile.displayname,
-            username : profile.displayname,
-            email : '',
-            password : '',
-            socialInfo : [{
-                googleId : profile.id
-            }]
-          });
-          //console.log('going to create a new user ', newUser);
-          User.createUser(newUser , function(err , new_user){
-            if(err) throw err;
-            console.log('new user created from google info',new_user);
-            done(null , new_user);
-          });
-      }
-  });
+    clientID : process.env.GOOGLE_CLIENT_ID,
+    clientSecret : process.env.GOOGLE_CLIENT_SECRET,
+    callbackURL : process.env.GOOGLE_CALLBACK_URL
+  },
+  googleCallback = function(accessToken, refreshToken, profile, done){
+    //check if user already exists
+    User.getOneExistingGoogleUser(profile.id, (err, user) => {
+        if(err) throw err;
+        if(user){
+            console.log('pre existing google user ', user);
+            done(null, user);
+        }
+        else
+        {
+            // create a new user
+            console.log('going to create a new user from google' , profile);
+            var newUser = new User({
+              name : profile.displayName,
+              username : profile.displayName,
+              email : '',
+              password : '',
+              socialInfo : [{
+                  googleId : profile.id
+              }]
+            });
+            //console.log('going to create a new user ', newUser);
+            User.createUser(newUser , function(err , new_user){
+              if(err) throw err;
+              console.log('new user created from google info',new_user);
+              done(null , new_user);
+            });
+        }
+    });
 };
 
 var instagramOpts = {
@@ -72,10 +73,11 @@ var instagramOpts = {
         }
         else
         {
+          console.log('going to create a new user from instagram' , profile);
             // create a new user
             var newUser = new User({
-              name : profile.displayname,
-              username : profile.displayname,
+              name : profile.displayName,
+              username : profile.username,
               email : '',
               password : '',
               socialInfo : [{
@@ -107,9 +109,10 @@ var facebookOpts = {
         else
         {
             // create a new user
+            console.log('going to create a new user from facebook' , profile);
             var newUser = new User({
-              name : profile.displayname,
-              username : profile.displayname,
+              name : profile.displayName,
+              username : profile.displayName,
               email : '',
               password : '',
               socialInfo : [{
@@ -126,6 +129,47 @@ var facebookOpts = {
     });
   };
 
+var githubOpts = {
+    clientID      : process.env.GITHUB_CLIENT_ID,
+    clientSecret  : process.env.GITHUB_CLIENT_SECRET,
+    callbackURL   : process.env.GITHUB_CALLBACK_URL
+  },
+  githubCallback = function(accessToken, refreshToken, profile, done){
+    //console.log('in callback func' , profile);
+    User.getOneExistingGithubUser(profile.id, (err, user) => {
+      //console.log('profile info obtained from github : ', profile);
+        if(err) {
+          console.log('this error');
+          throw err;
+        }
+
+        if(user){
+            console.log('pre existing github user ', user);
+            done(null, user);
+        }
+        else
+        {
+            // create a new user
+            console.log('going to create a new user from github' , profile);
+            var newUser = new User({
+              name : profile.displayName,
+              username : profile.username,
+              email : '',
+              password : '',
+              socialInfo : [{
+                  githubId : profile.id
+              }]
+            });
+            //console.log('going to create a new user ', newUser);
+            User.createUser(newUser , function(err , new_user){
+              if(err) throw err;
+              console.log('new user created from github info',new_user);
+              done(null , new_user);
+            });
+        }
+    });
+};
+
 var twitterOpts = {
     consumerKey      : process.env.TWITTER_CONSUMER_KEY,
     consumerSecret  : process.env.TWITTER_CONSUMER_SECRET,
@@ -141,10 +185,11 @@ var twitterOpts = {
         else
         {
             // create a new user
+            console.log('going to create a new user from twiter' , profile);
             console.log('tw profile',profile);
             var newUser = new User({
-              name : profile.displayname,
-              username : profile.displayname,
+              name : profile.displayName,
+              username : profile.username,
               email : '',
               password : '',
               socialInfo : [{
@@ -165,11 +210,11 @@ pasport.use(new LocalStrategy(
   function(username, password, done) {
   console.log('begining Strategy username', username, 'password ', password);
   //console.log('trial' , User.findOne({username : username}));
-  User.getUserByUsername(username, function(err, user){
-  	if(err) throw err;
-  	if(!user){
-    console.log('------Strategy user :', user);
-  		return done(null, false, {message: 'Unknown Username'});
+    User.getUserByUsername(username, function(err, user){
+    	if(err) throw err;
+    	if(!user){
+      console.log('------Strategy user :', user);
+    		return done(null, false, {message: 'Unknown Username'});
   	}
 
   	User.comparePassword(password, user.password, function(err, isMatch){
@@ -184,7 +229,9 @@ pasport.use(new LocalStrategy(
   });
 }));
 
+
 pasport.use(new GoogleStrategy(googleOpts,googleCallback));
 pasport.use(new FacebookStrategy(facebookOpts,facebookCallback));
 pasport.use(new TwitterStrategy(twitterOpts,twitterCallback));
 pasport.use(new InstagramStrategy(instagramOpts,instagramCallback));
+pasport.use(new GithubStrategy(githubOpts,githubCallback));
