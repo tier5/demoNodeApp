@@ -1,0 +1,22 @@
+PROJECT SETUP INISTRUCTIONS
+
+##type the commands without any brackets
+
+clone using https run command
+  [git clone https://github.com/tier5/demoNodeApp.git]
+
+  OR
+clone using ssh
+  [git clone git@github.com:tier5/demoNodeApp.git]
+
+then go to the project folder and run command
+  [npm install]
+
+start server using
+  [node app]
+
+or using nodemon
+  [nodemon app]
+
+if you don't have nodemon
+  you can install by typing [npm install -g nodemon]
