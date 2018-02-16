@@ -12,7 +12,9 @@
   "dependencies": {
     "bcryptjs": "*",
     "body-parser": "*",
+    "cheerio": "^1.0.0-rc.2",
     "connect-flash": "*",
+    "cookie": "^0.3.1",
     "cookie-parser": "^1.4.1",
     "cookie-session": "^2.0.0-beta.3",
     "dotenv": "^5.0.0",
@@ -33,6 +35,7 @@
     "passport-linkedin": "^1.0.0",
     "passport-linkedin-oauth2": "^1.5.0",
     "passport-local": "*",
-    "passport-twitter": "^1.0.4"
+    "passport-twitter": "^1.0.4",
+    "request": "^2.83.0"
   }
 }
