@@ -25,12 +25,12 @@ app.engine('handlebars', exphbs({defaultLayout:'layout'}));
 app.set('view engine', 'handlebars');
 
 
-// bodyParser Middleware
+// bodyParser MIDDLEWARE
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(cookieParser());
 
-//Set static folder
+//SET STATIC FOLDER
 app.use(express.static(path.join(__dirname, 'public')));
 
 // app.use(cookieSession({
@@ -38,18 +38,18 @@ app.use(express.static(path.join(__dirname, 'public')));
 //   keys: process.env.SESSION_KEY
 // }));
 
-//Express session
+//EXPRESS SESSION
 app.use(session({
   secret: 'secret',
   saveUninitialized: true,
   resave: true
 }));
 
-//Passport init
+//PASSPORT INITIALIZATION
 app.use(passport.initialize());
 app.use(passport.session());
 
-//Express Validator
+//EXPRESS VALIDATOR
 app.use(expressValidator({
   errorFormatter: function(param,msg,value){
     var namespace = param.split('.')
@@ -67,10 +67,10 @@ app.use(expressValidator({
   }
 }));
 
-//Connect flash
+//CONNECT FLASH
 app.use(flash());
 
-//Global vars
+//GLOBAL VARIABLES
 app.use(function(req,res,next){
   res.locals.sucess_msg = req.flash('success_msg');
   res.locals.error_msg = req.flash('error_msg');
@@ -79,7 +79,7 @@ app.use(function(req,res,next){
   next();
 });
 
-//Set port
+//SET PORT
 app.use('/',routes);
 app.use('/users',users);
 
